@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<style>
+    #loading_bar{
+        width: 100%;
+        background-color: lightgray;
+    }
+
+    #bar{
+        width: 1%;
+        background-color: goldenrod;
+        height: 30px;
+    }
+</style>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Bar</title>
+</head>
+<body>
+
+    <div id="loading_bar">
+        <div id="bar">
+            
+        </div>
+    </div>
+    
+</body>
+</html>
+
+<script>
+    
+    let barra_actual = document.getElementById('bar');
+
+    function setLoading(elem, porcentaje){                
+        let current_width = getCurrentWidth(elem);
+        let width = current_width;
+
+        let interval = setInterval(load, 10);
+
+        function load(){            
+            current_width = getCurrentWidth(elem);              
+            if (current_width >= porcentaje || current_width >= 100){
+                clearInterval(interval);
+                return;
+            }
+
+            width++;
+            elem.style.width = width + '%';
+        }        
+    }
+
+    function getCurrentWidth(elem){             
+        let current_width = Number(elem.style.width.replace('%', ''));
+
+        if (current_width == '')
+            current_width = 1;
+
+        return current_width;
+    }
+
+    function resetBar(elem){
+        elem.style.width = '0%';
+    }
+</script>
