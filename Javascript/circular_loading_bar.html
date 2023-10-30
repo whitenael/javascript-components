@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/circular_loading_bar.css">
+    <title>circular loading bar</title>
+</head>
+<body>
+    
+<div class="container">        
+    <div class="bar">          
+        <svg id="progress_bar">
+            <circle cx="50%" cy="50%" r="50%"></circle>
+        </svg>                 
+        <h1 class="number">0%</h1>            
+    </div>    
+</div>
+</body>
+</html>
+
+<script>
+
+    // El 100% => strokeDashofset => 0
+    // El 0% => strokeDashofset => -630
+
+    let e = document.getElementById('progress_bar')
+
+    function numberLoading(porcentaje){
+        const num = document.querySelector(".number");
+        let counter = 0;
+        setInterval(() => {
+        if (counter == porcentaje) {
+            clearInterval();
+        } else {
+            counter += 1;
+            num.textContent = counter + "%";
+        }
+        }, 8);
+    }
+
+    function setLoading(elem, porcentaje){          
+        let c = elem.childNodes[1];                     
+        let current_strokeDashoffset = getCurrentStrokeDashoffset(c);
+        let strokeDashoffset = current_strokeDashoffset;
+
+        const num = document.querySelector(".number");        
+
+        let stroke = convertirPorcentajeAStroke(porcentaje)
+
+        let interval = setInterval(load, 8);
+
+        function load(){            
+            current_strokeDashoffset = getCurrentStrokeDashoffset(c);              
+            if (current_strokeDashoffset >= stroke || convertirStrokeAPorcentaje(current_strokeDashoffset * -1) > 100){
+                clearInterval(interval);
+                return;
+            }
+            
+            num.textContent = convertirStrokeAPorcentaje(current_strokeDashoffset * -1) + "%";
+            strokeDashoffset++;
+            c.style.strokeDashoffset = strokeDashoffset;
+        }        
+    }
+
+    function getCurrentStrokeDashoffset(elem){             
+        let current_strokeDashoffset = Number(elem.style.strokeDashoffset);
+
+        if (current_strokeDashoffset == 0)
+            current_strokeDashoffset = -630; // En el circulo representa un strokeDash vacio
+
+        return current_strokeDashoffset;
+    }
+
+    function convertirPorcentajeAStroke(porcentaje){        
+        return -630 - (-630 * (porcentaje / 100));
+    }
+
+    function convertirStrokeAPorcentaje(stroke){
+        return Math.round(-((stroke / 6.3)-100), 2);
+    }
+
+</script>
